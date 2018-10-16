@@ -1,0 +1,5 @@
+<?php exit; ?>
+1539730737
+SELECT u.user_id, u.group_id as default_group, u.username, u.user_colour, u.user_allow_pm, g.group_id, g.group_name, g.group_colour, g.group_type, g.group_legend, ug.user_id as ug_user_id FROM (phpbb_users u CROSS JOIN phpbb_groups g) LEFT JOIN phpbb_user_group ug ON (ug.group_id = g.group_id AND ug.user_pending = 0 AND ug.user_id = 2) WHERE u.group_id = g.group_id AND g.group_name IN ('ADMINISTRATORS', 'GLOBAL_MODERATORS') ORDER BY g.group_legend ASC, u.username_clean ASC
+331
+a:1:{i:0;a:11:{s:7:"user_id";s:1:"2";s:13:"default_group";s:1:"5";s:8:"username";s:4:"sevi";s:11:"user_colour";s:6:"AA0000";s:13:"user_allow_pm";s:1:"1";s:8:"group_id";s:1:"5";s:10:"group_name";s:14:"ADMINISTRATORS";s:12:"group_colour";s:6:"AA0000";s:10:"group_type";s:1:"3";s:12:"group_legend";s:1:"1";s:10:"ug_user_id";s:1:"2";}}

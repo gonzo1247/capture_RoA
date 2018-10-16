@@ -1,0 +1,5 @@
+<?php exit; ?>
+1539730737
+SELECT t.forum_id, t.topic_id, t.topic_last_post_id, t.topic_last_post_time, t.topic_time, t.topic_title, t.topic_attachment, t.topic_views, t.poll_title, t.topic_posts_approved, t.topic_posts_unapproved, t.topic_posts_softdeleted, t.topic_poster, t.topic_type, t.topic_status, t.topic_last_poster_name, t.topic_last_poster_id, t.topic_last_poster_colour, t.icon_id, u.username, u.user_id, u.user_type, u.user_colour, p.post_id, p.poster_id, p.post_time, p.post_text, p.post_attachment, p.post_username, p.enable_smilies, p.enable_bbcode, p.enable_magic_url, p.bbcode_bitfield, p.bbcode_uid, f.forum_name, f.enable_icons, tp.topic_posted FROM (phpbb_topics t) LEFT JOIN phpbb_users u ON (t.topic_poster = u.user_id) LEFT JOIN phpbb_forums f ON (t.forum_id=f.forum_id) LEFT JOIN phpbb_posts p ON (t.topic_first_post_id = p.post_id) LEFT JOIN phpbb_topics_posted tp ON (tp.topic_id = t.topic_id AND tp.user_id = 2) WHERE ((t.topic_type = 2) OR (t.topic_type = 3)) AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_moved_id = 0 ORDER BY t.topic_time DESC LIMIT 1
+6
+a:0:{}
