@@ -1,5 +1,7 @@
 /.idea/
 /cache/production/
+/cache/install/
 config.php
 .htaccess
 .htpasswd
+/config.php
