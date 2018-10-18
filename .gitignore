@@ -1,6 +1,6 @@
-.idea
+/.idea/
+/cache/production/
 config.php
 .htaccess
 .htpasswd
-cache
 /config.php
