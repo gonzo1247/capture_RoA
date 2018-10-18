@@ -83,5 +83,3 @@ RewriteRule ^(.*)$ app.php [QSA,L]
 		</Files>
 	</IfModule>
 </IfModule>
-
-DirectoryIndex app.php/portal index.php index.html index.htm

@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: https://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at https://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+		
+		<title lang="en">PBWoW 2</title>
+		
+		<description lang="en">This MOD includes all the functionality needed to get the PBWoW 2 style for phpBB up and running. It is AutoMOD compatible and requires UMIL.</description>
+		
+		<github><![CDATA[https://github.com/phpbb/modx]]></github>
+		
+		<author-group>
+			<author>
+				<username>PayBas</username>
+				<homepage>http://pbwow.com/</homepage>
+				<contributions-group>
+					<contributions status="current" position="Developer" />
+				</contributions-group>
+			</author>
+		</author-group>
+		
+		<mod-version>2.0.9</mod-version>
+		
+		<installation>
+			<level>easy</level>
+			<time>60</time>
+			<target-version>3.0.12</target-version>
+		</installation>
+		
+		<history>
+			<entry>
+				<date>2013-10-17</date>
+				<rev-version>2.0.0</rev-version>
+				<changelog lang="en">
+					<change>Initial release.</change>
+				</changelog> 
+			</entry>
+			<entry>
+				<date>2013-10-19</date>
+				<rev-version>2.0.1</rev-version>
+				<changelog lang="en">
+					<change>Hooked more mods</change>
+					<change>Improved ACP modules</change>
+					<change>Much improved HTML and CSS validation</change>
+					<change>Implemented advertisment and tracking options</change>
+				</changelog> 
+			</entry>
+			<entry>
+				<date>2013-10-29</date>
+				<rev-version>2.0.3</rev-version>
+				<changelog lang="en">
+					<change>Small improvements to ACP modules (more checks)</change>
+					<change>PBWoW template additions for memberlist.php (view profile page)</change>
+					<change>Support for Diablo CPFs</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-11-5</date>
+				<rev-version>2.0.4</rev-version>
+				<changelog lang="en">
+					<change>Code cleanup and optimization</change>
+					<change>Support for Topic Preview 2 MOD</change>
+					<change>Added additional features to the hooks (for ACP configuration settings)</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-11-11</date>
+				<rev-version>2.0.5</rev-version>
+				<changelog lang="en">
+					<change>Bugfixes for ACP modules</change>
+					<change>Version checking feature in ACP module (will check if all PBWoW 2 components are up-to-date)</change>
+					<change>More ACP module options</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-11-19</date>
+				<rev-version>2.0.6</rev-version>
+				<changelog lang="en">
+					<change>Bugfixes for ACP modules</change>
+					<change>New breadcrumb (nav-links) menu feature</change>
+					<change>More ACP module options</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-11-20</date>
+				<rev-version>2.0.6b</rev-version>
+				<changelog lang="en">
+					<change>Hotfix for Topic Preview 2 incompatibility</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-11-30</date>
+				<rev-version>2.0.7</rev-version>
+				<changelog lang="en">
+					<change>Custom logo support</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2014-01-19</date>
+				<rev-version>2.0.8</rev-version>
+				<changelog lang="en">
+					<change>Fixed a problem whereby user rank icons would be changed, which lead to incompatibility with other styles</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2014-03-09</date>
+				<rev-version>2.0.9</rev-version>
+				<changelog lang="en">
+					<change>Added Battle.net API character information service</change>
+				</changelog>
+			</entry>
+		</history>
+	</header>
+	
+	<action-group>
+
+		<copy>
+			<file from="root/adm/style/acp_pbwow2.html" to="adm/style/acp_pbwow2.html" />
+			<file from="root/includes/acp/acp_pbwow2.php" to="includes/acp/acp_pbwow2.php" />
+			<file from="root/includes/acp/info/acp_pbwow2.php" to="includes/acp/info/acp_pbwow2.php" />
+			<file from="root/includes/hooks/hook_pbwow.php" to="includes/hooks/hook_pbwow.php" />
+			<file from="root/install/index.php" to="install/index.php" />
+			<file from="root/language/en/mods/info_acp_pbwow.php" to="language/en/mods/info_acp_pbwow.php" />
+			<file from="root/language/en/mods/lang_pbwow_acp.php" to="language/en/mods/lang_pbwow_acp.php" />
+		</copy>
+
+		<open src="includes/bbcode.php">
+			<edit>
+				<comment lang="en">Just a small edit to make content text easier to style.</comment>
+				<find><![CDATA[				'email'		=> '<a href="mailto:$1">$2</a>'
+			);]]></find>
+				<action type="after-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			$bbcode_hardtpl['b_open'] = '<span class="bold" style="font-weight: bold">';
+			$bbcode_hardtpl['i_open'] = '<span class="italic" style="font-style: italic">';
+			$bbcode_hardtpl['u_open'] = '<span class="underline" style="text-decoration: underline">';
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+		</open>
+
+		<open src="includes/constants.php">
+			<edit>
+				<comment lang="en">Simply add the following line somewhere at the bottom.</comment>
+				<find><![CDATA[// Additional tables]]></find>
+				<action type="after-add"><![CDATA[define('PBWOW2_CONFIG_TABLE', 		$table_prefix . 'pbwow2_config');
+				define('PBWOW2_CHARS_TABLE', 		$table_prefix . 'pbwow2_chars');]]></action>
+			</edit>
+		</open>
+
+		<open src="includes/functions_profile_fields.php">
+			<edit>
+				<comment lang="en">Call the Battle.net API function.</comment>
+				<find><![CDATA[			// Go through the fields in correct order]]></find>
+				<action type="before-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			if (function_exists('process_pbwow_bnet')) {
+				$field_data = process_pbwow_bnet($user_id, $field_data);
+			}
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<comment lang="en">We need more information about the custom profile fields, such as ValueID.</comment>
+				<find><![CDATA[					'PROFILE_' . strtoupper($ident) . '_EXPLAIN'=> $ident_ary['data']['lang_explain'],]]></find>
+				<action type="after-add"><![CDATA[					'PROFILE_' . strtoupper($ident) . '_VALUEID'=> $ident_ary['value'], // PBWoW 2 MOD
+					'PROFILE_' . strtoupper($ident) . '_IDENT'	=> $ident, // PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[					'PROFILE_FIELD_EXPLAIN'	=> $ident_ary['data']['lang_explain'],]]></find>
+				<action type="after-add"><![CDATA[					'PROFILE_FIELD_VALUEID'	=> $ident_ary['value'], // PBWoW 2 MOD
+					'PROFILE_FIELD_IDENT'	=> $ident, // PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<comment lang="en">Now that all the CPF information is loaded, we pass it to PBWoW for some gaming magic (game avatars, factions, etc.)</comment>
+				<find><![CDATA[			return $tpl_fields;]]></find>
+				<action type="before-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			if (function_exists('process_pbwow_cpf')) {
+				$tpl_fields = process_pbwow_cpf($tpl_fields, $profile_row);
+			}
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+		</open>
+
+		<open src="memberlist.php">
+			<edit>
+				<comment lang="en">Get special PBWoW template variables for a more consistent look (like search.php and viewtopic.php.</comment>
+				<find><![CDATA[	// Dump it out to the template]]></find>
+				<action type="before-add"><![CDATA[	// BEGIN PBWoW 2 MOD
+	$posts_rank_title = $posts_rank_image = $posts_rank_image_src = $user_special_styling = $user_special_color = '';
+	
+	get_user_rank(0, (($user_id == ANONYMOUS) ? false : $data['user_posts']), $posts_rank_title, $posts_rank_image, $posts_rank_image_src);
+	
+	check_rank_special_styling($data['user_rank'], $user_special_styling, $user_special_color);
+	$avatar_src = get_user_avatar_src($data['user_avatar'], $data['user_avatar_type']);
+
+	$template->assign_vars(array(
+		'AVATAR_SRC'			=> $avatar_src,
+		'POSTS_RANK_TITLE'		=> $posts_rank_title,
+		'POSTS_RANK_IMG'		=> $posts_rank_image,
+		'POSTS_RANK_IMG_SRC'	=> $posts_rank_image_src,
+		'USER_SPECIAL_STYLING'	=> $user_special_styling,
+		'USER_SPECIAL_COLOR'	=> $user_special_color,
+	));
+	// END PBWoW 2 MOD]]></action>
+			</edit>
+		</open>
+
+		<open src="search.php">
+			<edit>
+				<comment lang="en">We need additional information from the database.</comment>
+				<find><![CDATA[			$sql = 'SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.username_clean, u.user_sig, u.user_sig_bbcode_uid, u.user_colour]]></find>
+				<action type="replace-with"><![CDATA[			//$sql = 'SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.username_clean, u.user_sig, u.user_sig_bbcode_uid, u.user_colour // PBWoW 2 MOD
+			$sql = 'SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.username_clean, u.user_sig, u.user_sig_bbcode_uid, u.user_colour, u.user_avatar, u.user_avatar_type, u.user_rank, u.user_posts]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[			$bbcode_bitfield = $text_only_message = '';
+			$attach_list = array();]]></find>
+				<action type="after-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			$id_cache = array();
+			$user_cache = array();
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<comment lang="en">Get and cache special styling.</comment>
+				<find><![CDATA[				// We pre-process some variables here for later usage]]></find>
+				<action type="before-add"><![CDATA[				// BEGIN PBWoW 2 MOD
+				$id_cache[] = $row['poster_id'];
+				if (!isset($user_cache[$row['poster_id']]))
+				{
+					if ($row['poster_id'] == ANONYMOUS) {
+						// do nothing
+					}
+					else {
+						$user_cache[$row['poster_id']] = array(
+							'avatar_src'				=> '',
+							'rank_title'				=> '',
+							'rank_image'				=> '',
+							'rank_image_src'			=> '',
+							'posts_rank_title'			=> '',
+							'posts_rank_image'			=> '',
+							'posts_rank_image_src'		=> '',
+							'user_special_styling'		=> '',
+							'user_special_color'		=> '',
+						);
+			
+						if(!empty($row['user_rank'])){
+							get_user_rank_global($row['user_rank'], $row['user_posts'], $user_cache[$row['poster_id']]['rank_title'], $user_cache[$row['poster_id']]['rank_image'], $user_cache[$row['poster_id']]['rank_image_src']);
+						}
+						get_user_rank_global(0, $row['user_posts'], $user_cache[$row['poster_id']]['posts_rank_title'], $user_cache[$row['poster_id']]['posts_rank_image'], $user_cache[$row['poster_id']]['posts_rank_image_src']);
+						
+						check_rank_special_styling($row['user_rank'], $user_cache[$row['poster_id']]['user_special_styling'], $user_cache[$row['poster_id']]['user_special_color']);
+						$user_cache[$row['poster_id']]['avatar_src'] = ($user->optionget('viewavatars')) ? get_user_avatar_src($row['user_avatar'], $row['user_avatar_type']) : '';
+					}
+				}
+				// END PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<comment lang="en">This loads CPF functionality, which is not loaded into search.php by default.</comment>
+				<find><![CDATA[			unset($text_only_message);]]></find>
+				<action type="after-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			if ($config['load_cpf_viewtopic'])
+			{
+				if(!class_exists('custom_profile')) {
+					include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+				}
+				$cp = new custom_profile();
+				$profile_fields_cache = $cp->generate_profile_fields_template('grab', $id_cache);
+			}
+			unset($id_cache);
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<comment lang="en">Merge all additional template information and output it.</comment>
+				<find><![CDATA[					'MESSAGE'			=> $row['post_text']
+				);]]></find>
+				<action type="after-add"><![CDATA[				// BEGIN PBWoW 2 MOD
+				$cp_row = array();
+				if ($config['load_cpf_viewtopic'])
+				{
+					$cp_row = (isset($profile_fields_cache[$row['poster_id']])) ? $cp->generate_profile_fields_template('show', false, $profile_fields_cache[$row['poster_id']]) : array();
+
+					$tpl_ary += array(
+						'POSTER_AVATAR_SRC'		=> $user_cache[$row['poster_id']]['avatar_src'],
+						'RANK_TITLE'			=> $user_cache[$row['poster_id']]['rank_title'],
+						'RANK_IMG'				=> $user_cache[$row['poster_id']]['rank_image'],
+						'RANK_IMG_SRC'			=> $user_cache[$row['poster_id']]['rank_image_src'],
+						'POSTS_RANK_TITLE'		=> $user_cache[$row['poster_id']]['posts_rank_title'],
+						'POSTS_RANK_IMG'		=> $user_cache[$row['poster_id']]['posts_rank_image'],
+						'POSTS_RANK_IMG_SRC'	=> $user_cache[$row['poster_id']]['posts_rank_image_src'],
+						'USER_SPECIAL_STYLING'	=> $user_cache[$row['poster_id']]['user_special_styling'],
+						'USER_SPECIAL_COLOR'	=> $user_cache[$row['poster_id']]['user_special_color'],
+	
+						'S_CUSTOM_FIELDS'	=> (isset($cp_row['row']) && sizeof($cp_row['row'])) ? true : false
+					);
+					
+					if (isset($cp_row['row']) && sizeof($cp_row['row']))
+					{
+						$tpl_ary = array_merge($tpl_ary, $cp_row['row']);
+					}
+				}
+				// END PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		}
+
+		if ($topic_id && ($topic_id == $result_topic_id))]]></find>
+				<action type="before-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			if (!empty($cp_row['blockrow']))
+			{
+				foreach ($cp_row['blockrow'] as $field_data)
+				{
+					$template->assign_block_vars('searchresults.custom_fields', $field_data);
+				}
+			}
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+		</open>
+
+		<open src="viewtopic.php">
+			<edit>
+				<comment lang="en">Fix for anonymous users</comment>
+				<find><![CDATA[get_user_rank($row['user_rank'], false, $user_cache[$poster_id]['rank_title'], $user_cache[$poster_id]['rank_image'], $user_cache[$poster_id]['rank_image_src']);]]></find>
+				<action type="after-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			$user_cache[$poster_id] += array(
+				'avatar_src'				=> '',
+				'posts_rank_title'			=> '',
+				'posts_rank_image'			=> '',
+				'posts_rank_image_src'		=> '',
+				'user_special_styling'		=> '',
+				'user_special_color'		=> '',
+			);
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<comment lang="en">We need to get the special styling options for posts, such as Blizz, Propass, etc. Also some avatar features.</comment>
+				<find><![CDATA[			get_user_rank($row['user_rank'], $row['user_posts'], $user_cache[$poster_id]['rank_title'], $user_cache[$poster_id]['rank_image'], $user_cache[$poster_id]['rank_image_src']);]]></find>
+				<action type="after-add"><![CDATA[			// BEGIN PBWoW 2 MOD
+			$user_cache[$poster_id] += array(
+				'avatar_src'				=> '',
+				'posts_rank_title'			=> '',
+				'posts_rank_image'			=> '',
+				'posts_rank_image_src'		=> '',
+				'user_special_styling'		=> '',
+				'user_special_color'		=> '',
+			);
+
+			get_user_rank(0, $row['user_posts'], $user_cache[$poster_id]['posts_rank_title'], $user_cache[$poster_id]['posts_rank_image'], $user_cache[$poster_id]['posts_rank_image_src']);
+			
+			check_rank_special_styling($row['user_rank'], $user_cache[$poster_id]['user_special_styling'], $user_cache[$poster_id]['user_special_color']);
+			$user_cache[$poster_id]['avatar_src'] = ($user->optionget('viewavatars')) ? get_user_avatar_src($row['user_avatar'], $row['user_avatar_type']) : '';
+			// END PBWoW 2 MOD]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		'POSTER_AVATAR'		=> $user_cache[$poster_id]['avatar'],]]></find>
+				<action type="after-add"><![CDATA[		// BEGIN PBWoW 2 MOD
+		'POSTER_AVATAR_SRC'		=> $user_cache[$poster_id]['avatar_src'],
+		'POSTS_RANK_TITLE'		=> $user_cache[$poster_id]['posts_rank_title'],
+		'POSTS_RANK_IMG'		=> $user_cache[$poster_id]['posts_rank_image'],
+		'POSTS_RANK_IMG_SRC'	=> $user_cache[$poster_id]['posts_rank_image_src'],
+		'USER_SPECIAL_STYLING'	=> $user_cache[$poster_id]['user_special_styling'],
+		'USER_SPECIAL_COLOR'	=> $user_cache[$poster_id]['user_special_color'],
+		// END PBWoW 2 MOD]]></action>
+			</edit>
+		</open>
+
+		<php-installer>install/index.php</php-installer>
+		<diy-instructions lang="en"><![CDATA[Once all the files have been modified and uploaded to your site, point your browser to the "/install/index.php" script
+(or click the highlighted link above if you are using AutoMOD) and follow the instructions. Once that is complete,
+you can delete the "/install/" directory.]]></diy-instructions>
+	</action-group>
+</mod>

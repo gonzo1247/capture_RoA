@@ -266,6 +266,10 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
             'phpbb.report.handlers.report_handler_pm' => 'getPhpbb_Report_Handlers_ReportHandlerPmService',
             'phpbb.report.handlers.report_handler_post' => 'getPhpbb_Report_Handlers_ReportHandlerPostService',
             'phpbb.report.report_reason_list_provider' => 'getPhpbb_Report_ReportReasonListProviderService',
+            'phpbb.viglink.acp_listener' => 'getPhpbb_Viglink_AcpListenerService',
+            'phpbb.viglink.cron.task.viglink' => 'getPhpbb_Viglink_Cron_Task_ViglinkService',
+            'phpbb.viglink.helper' => 'getPhpbb_Viglink_HelperService',
+            'phpbb.viglink.listener' => 'getPhpbb_Viglink_ListenerService',
             'plupload' => 'getPluploadService',
             'profilefields.lang_helper' => 'getProfilefields_LangHelperService',
             'profilefields.manager' => 'getProfilefields_ManagerService',
@@ -456,7 +460,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getAuth_Provider_OauthService()
     {
-        return $this->services['auth.provider.oauth'] = new \phpbb\auth\provider\oauth\oauth($this->get('dbal.conn'), $this->get('config'), $this->get('passwords.manager'), $this->get('request'), $this->get('user'), 'phpbb_oauth_tokens', 'phpbb_oauth_states', 'phpbb_oauth_accounts', $this->get('auth.provider.oauth.service_collection'), 'phpbb_users', $this, $this->get('dispatcher'), './', 'php');
+        return $this->services['auth.provider.oauth'] = new \phpbb\auth\provider\oauth\oauth($this->get('dbal.conn'), $this->get('config'), $this->get('passwords.manager'), $this->get('request'), $this->get('user'), 'phpbb_3oauth_tokens', 'phpbb_3oauth_states', 'phpbb_3oauth_accounts', $this->get('auth.provider.oauth.service_collection'), 'phpbb_3users', $this, $this->get('dispatcher'), './', 'php');
     }
 
     /**
@@ -673,7 +677,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getBoard3_Portal_MainService()
     {
-        return $this->services['board3.portal.main'] = new \board3\portal\controller\main($this->get('board3.portal.columns'), $this->get('config'), $this->get('board3.portal.controller_helper'), $this->get('template'), $this->get('user'), $this->get('path_helper'), './', '.php', 'phpbb_portal_config', 'phpbb_portal_modules');
+        return $this->services['board3.portal.main'] = new \board3\portal\controller\main($this->get('board3.portal.columns'), $this->get('config'), $this->get('board3.portal.controller_helper'), $this->get('template'), $this->get('user'), $this->get('path_helper'), './', '.php', 'phpbb_3portal_config', 'phpbb_3portal_modules');
     }
 
     /**
@@ -1100,7 +1104,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getConfigService()
     {
-        return $this->services['config'] = new \phpbb\config\db($this->get('dbal.conn'), $this->get('cache.driver'), 'phpbb_config');
+        return $this->services['config'] = new \phpbb\config\db($this->get('dbal.conn'), $this->get('cache.driver'), 'phpbb_3config');
     }
 
     /**
@@ -1120,7 +1124,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getConfigTextService()
     {
-        return $this->services['config_text'] = new \phpbb\config\db_text($this->get('dbal.conn'), 'phpbb_config_text');
+        return $this->services['config_text'] = new \phpbb\config\db_text($this->get('dbal.conn'), 'phpbb_3config_text');
     }
 
     /**
@@ -1472,7 +1476,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getContent_VisibilityService()
     {
-        return $this->services['content.visibility'] = new \phpbb\content_visibility($this->get('auth'), $this->get('config'), $this->get('dispatcher'), $this->get('dbal.conn'), $this->get('user'), './', 'php', 'phpbb_forums', 'phpbb_posts', 'phpbb_topics', 'phpbb_users');
+        return $this->services['content.visibility'] = new \phpbb\content_visibility($this->get('auth'), $this->get('config'), $this->get('dispatcher'), $this->get('dbal.conn'), $this->get('user'), './', 'php', 'phpbb_3forums', 'phpbb_3posts', 'phpbb_3topics', 'phpbb_3users');
     }
 
     /**
@@ -1544,7 +1548,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getCore_Captcha_Plugins_QaService()
     {
-        $instance = new \phpbb\captcha\plugins\qa('phpbb_captcha_questions', 'phpbb_captcha_answers', 'phpbb_qa_confirm');
+        $instance = new \phpbb\captcha\plugins\qa('phpbb_3captcha_questions', 'phpbb_3captcha_answers', 'phpbb_3qa_confirm');
 
         $instance->set_name('core.captcha.plugins.qa');
 
@@ -1854,6 +1858,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
         $instance->add('cron.task.text_reparser.post_text');
         $instance->add('cron.task.text_reparser.user_signature');
         $instance->add('cron.task.core.update_hashes');
+        $instance->add('phpbb.viglink.cron.task.viglink');
 
         return $instance;
     }
@@ -1978,6 +1983,8 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
         $this->services['dispatcher'] = $instance = new \phpbb\event\dispatcher($this);
 
         $instance->addSubscriberService('board3.portal.listener', 'board3\\portal\\event\\listener');
+        $instance->addSubscriberService('phpbb.viglink.listener', 'phpbb\\viglink\\event\\listener');
+        $instance->addSubscriberService('phpbb.viglink.acp_listener', 'phpbb\\viglink\\event\\acp_listener');
         $instance->addSubscriberService('console.exception_subscriber', 'phpbb\\console\\exception_subscriber');
         $instance->addSubscriberService('kernel_exception_subscriber', 'phpbb\\event\\kernel_exception_subscriber');
         $instance->addSubscriberService('kernel_terminate_subscriber', 'phpbb\\event\\kernel_terminate_subscriber');
@@ -1994,7 +2001,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getExt_ManagerService()
     {
-        return $this->services['ext.manager'] = new \phpbb\extension\manager($this, $this->get('dbal.conn'), $this->get('config'), $this->get('filesystem'), 'phpbb_ext', './', 'php', $this->get('cache'));
+        return $this->services['ext.manager'] = new \phpbb\extension\manager($this, $this->get('dbal.conn'), $this->get('config'), $this->get('filesystem'), 'phpbb_3ext', './', 'php', $this->get('cache'));
     }
 
     /**
@@ -2288,7 +2295,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getLogService()
     {
-        return $this->services['log'] = new \phpbb\log\log($this->get('dbal.conn'), $this->get('user'), $this->get('auth'), $this->get('dispatcher'), './', 'adm/', 'php', 'phpbb_log');
+        return $this->services['log'] = new \phpbb\log\log($this->get('dbal.conn'), $this->get('user'), $this->get('auth'), $this->get('dispatcher'), './', 'adm/', 'php', 'phpbb_3log');
     }
 
     /**
@@ -2328,7 +2335,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getMigratorService()
     {
-        return $this->services['migrator'] = new \phpbb\db\migrator($this, $this->get('config'), $this->get('dbal.conn'), $this->get('dbal.tools'), 'phpbb_migrations', './', 'php', 'phpbb_', $this->get('migrator.tool_collection'), $this->get('migrator.helper'));
+        return $this->services['migrator'] = new \phpbb\db\migrator($this, $this->get('config'), $this->get('dbal.conn'), $this->get('dbal.tools'), 'phpbb_3migrations', './', 'php', 'phpbb_3', $this->get('migrator.tool_collection'), $this->get('migrator.helper'));
     }
 
     /**
@@ -2368,7 +2375,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getMigrator_Tool_ModuleService()
     {
-        return $this->services['migrator.tool.module'] = new \phpbb\db\migration\tool\module($this->get('dbal.conn'), $this->get('cache'), $this->get('user'), $this->get('module.manager'), './', 'php', 'phpbb_modules');
+        return $this->services['migrator.tool.module'] = new \phpbb\db\migration\tool\module($this->get('dbal.conn'), $this->get('cache'), $this->get('user'), $this->get('module.manager'), './', 'php', 'phpbb_3modules');
     }
 
     /**
@@ -2480,7 +2487,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getModule_ManagerService()
     {
-        return $this->services['module.manager'] = new \phpbb\module\module_manager($this->get('cache.driver'), $this->get('dbal.conn'), $this->get('ext.manager'), 'phpbb_modules', './', 'php');
+        return $this->services['module.manager'] = new \phpbb\module\module_manager($this->get('cache.driver'), $this->get('dbal.conn'), $this->get('ext.manager'), 'phpbb_3modules', './', 'php');
     }
 
     /**
@@ -2490,7 +2497,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Method_BoardService()
     {
-        return new \phpbb\notification\method\board($this->get('user_loader'), $this->get('dbal.conn'), $this->get('cache.driver'), $this->get('user'), $this->get('config'), 'phpbb_notification_types', 'phpbb_notifications');
+        return new \phpbb\notification\method\board($this->get('user_loader'), $this->get('dbal.conn'), $this->get('cache.driver'), $this->get('user'), $this->get('config'), 'phpbb_3notification_types', 'phpbb_3notifications');
     }
 
     /**
@@ -2536,7 +2543,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_AdminActivateUserService()
     {
-        $instance = new \phpbb\notification\type\admin_activate_user($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\admin_activate_user($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2551,7 +2558,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_ApprovePostService()
     {
-        $instance = new \phpbb\notification\type\approve_post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\approve_post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2566,7 +2573,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_ApproveTopicService()
     {
-        $instance = new \phpbb\notification\type\approve_topic($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\approve_topic($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2581,7 +2588,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_BookmarkService()
     {
-        $instance = new \phpbb\notification\type\bookmark($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\bookmark($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2596,7 +2603,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_DisapprovePostService()
     {
-        $instance = new \phpbb\notification\type\disapprove_post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\disapprove_post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2611,7 +2618,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_DisapproveTopicService()
     {
-        $instance = new \phpbb\notification\type\disapprove_topic($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\disapprove_topic($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2626,7 +2633,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_GroupRequestService()
     {
-        $instance = new \phpbb\notification\type\group_request($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\group_request($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
 
@@ -2640,7 +2647,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_GroupRequestApprovedService()
     {
-        return new \phpbb\notification\type\group_request_approved($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        return new \phpbb\notification\type\group_request_approved($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
     }
 
     /**
@@ -2650,7 +2657,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_PmService()
     {
-        $instance = new \phpbb\notification\type\pm($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\pm($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2665,7 +2672,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_PostService()
     {
-        $instance = new \phpbb\notification\type\post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2680,7 +2687,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_PostInQueueService()
     {
-        $instance = new \phpbb\notification\type\post_in_queue($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\post_in_queue($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2695,7 +2702,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_QuoteService()
     {
-        $instance = new \phpbb\notification\type\quote($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\quote($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2711,7 +2718,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_ReportPmService()
     {
-        $instance = new \phpbb\notification\type\report_pm($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\report_pm($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2726,7 +2733,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_ReportPmClosedService()
     {
-        $instance = new \phpbb\notification\type\report_pm_closed($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\report_pm_closed($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2741,7 +2748,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_ReportPostService()
     {
-        $instance = new \phpbb\notification\type\report_post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\report_post($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2756,7 +2763,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_ReportPostClosedService()
     {
-        $instance = new \phpbb\notification\type\report_post_closed($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\report_post_closed($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2771,7 +2778,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_TopicService()
     {
-        $instance = new \phpbb\notification\type\topic($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\topic($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2786,7 +2793,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotification_Type_TopicInQueueService()
     {
-        $instance = new \phpbb\notification\type\topic_in_queue($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_user_notifications');
+        $instance = new \phpbb\notification\type\topic_in_queue($this->get('dbal.conn'), $this->get('language'), $this->get('user'), $this->get('auth'), './', 'php', 'phpbb_3user_notifications');
 
         $instance->set_user_loader($this->get('user_loader'));
         $instance->set_config($this->get('config'));
@@ -2832,7 +2839,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getNotificationManagerService()
     {
-        return $this->services['notification_manager'] = new \phpbb\notification\manager($this->get('notification.type_collection'), $this->get('notification.method_collection'), $this, $this->get('user_loader'), $this->get('dispatcher'), $this->get('dbal.conn'), $this->get('cache'), $this->get('language'), $this->get('user'), 'phpbb_notification_types', 'phpbb_user_notifications');
+        return $this->services['notification_manager'] = new \phpbb\notification\manager($this->get('notification.type_collection'), $this->get('notification.method_collection'), $this, $this->get('user_loader'), $this->get('dispatcher'), $this->get('dbal.conn'), $this->get('cache'), $this->get('language'), $this->get('user'), 'phpbb_3notification_types', 'phpbb_3user_notifications');
     }
 
     /**
@@ -3141,6 +3148,50 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
     }
 
     /**
+     * Gets the public 'phpbb.viglink.acp_listener' shared service.
+     *
+     * @return \phpbb\viglink\event\acp_listener
+     */
+    protected function getPhpbb_Viglink_AcpListenerService()
+    {
+        return $this->services['phpbb.viglink.acp_listener'] = new \phpbb\viglink\event\acp_listener($this->get('config'), $this->get('language'), $this->get('request'), $this->get('template'), $this->get('user'), $this->get('phpbb.viglink.helper'), './', 'php');
+    }
+
+    /**
+     * Gets the public 'phpbb.viglink.cron.task.viglink' shared service.
+     *
+     * @return \phpbb\viglink\cron\viglink
+     */
+    protected function getPhpbb_Viglink_Cron_Task_ViglinkService()
+    {
+        $this->services['phpbb.viglink.cron.task.viglink'] = $instance = new \phpbb\viglink\cron\viglink($this->get('config'), $this->get('phpbb.viglink.helper'));
+
+        $instance->set_name('cron.task.viglink');
+
+        return $instance;
+    }
+
+    /**
+     * Gets the public 'phpbb.viglink.helper' shared service.
+     *
+     * @return \phpbb\viglink\acp\viglink_helper
+     */
+    protected function getPhpbb_Viglink_HelperService()
+    {
+        return $this->services['phpbb.viglink.helper'] = new \phpbb\viglink\acp\viglink_helper($this->get('cache.driver'), $this->get('config'), $this->get('file_downloader'), $this->get('language'), $this->get('log'), $this->get('user'));
+    }
+
+    /**
+     * Gets the public 'phpbb.viglink.listener' shared service.
+     *
+     * @return \phpbb\viglink\event\listener
+     */
+    protected function getPhpbb_Viglink_ListenerService()
+    {
+        return $this->services['phpbb.viglink.listener'] = new \phpbb\viglink\event\listener($this->get('config'), $this->get('template'));
+    }
+
+    /**
      * Gets the public 'plupload' shared service.
      *
      * @return \phpbb\plupload\plupload
@@ -3157,7 +3208,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getProfilefields_LangHelperService()
     {
-        return $this->services['profilefields.lang_helper'] = new \phpbb\profilefields\lang_helper($this->get('dbal.conn'), 'phpbb_profile_fields_lang');
+        return $this->services['profilefields.lang_helper'] = new \phpbb\profilefields\lang_helper($this->get('dbal.conn'), 'phpbb_3profile_fields_lang');
     }
 
     /**
@@ -3167,7 +3218,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getProfilefields_ManagerService()
     {
-        return $this->services['profilefields.manager'] = new \phpbb\profilefields\manager($this->get('auth'), $this->get('dbal.conn'), $this->get('dispatcher'), $this->get('request'), $this->get('template'), $this->get('profilefields.type_collection'), $this->get('user'), 'phpbb_profile_fields', 'phpbb_profile_lang', 'phpbb_profile_fields_data');
+        return $this->services['profilefields.manager'] = new \phpbb\profilefields\manager($this->get('auth'), $this->get('dbal.conn'), $this->get('dispatcher'), $this->get('request'), $this->get('template'), $this->get('profilefields.type_collection'), $this->get('user'), 'phpbb_3profile_fields', 'phpbb_3profile_lang', 'phpbb_3profile_fields_data');
     }
 
     /**
@@ -3498,7 +3549,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
         if ($lazyLoad) {
             $container = $this;
 
-            return $this->services['template.twig.lexer'] = new phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00(
+            return $this->services['template.twig.lexer'] = new phpbbtemplatetwiglexer_000000003d363aeb00000000450efd8f(
                 function (&$wrappedInstance, \ProxyManager\Proxy\LazyLoadingInterface $proxy) use ($container) {
                     $wrappedInstance = $container->getTemplate_Twig_LexerService(false);
 
@@ -3539,7 +3590,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextFormatter_DataAccessService()
     {
-        return $this->services['text_formatter.data_access'] = new \phpbb\textformatter\data_access($this->get('dbal.conn'), 'phpbb_bbcodes', 'phpbb_smilies', 'phpbb_styles', 'phpbb_words', './styles/');
+        return $this->services['text_formatter.data_access'] = new \phpbb\textformatter\data_access($this->get('dbal.conn'), 'phpbb_3bbcodes', 'phpbb_3smilies', 'phpbb_3styles', 'phpbb_3words', './styles/');
     }
 
     /**
@@ -3641,7 +3692,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextReparser_ForumDescriptionService()
     {
-        $this->services['text_reparser.forum_description'] = $instance = new \phpbb\textreparser\plugins\forum_description($this->get('dbal.conn'), 'phpbb_forums');
+        $this->services['text_reparser.forum_description'] = $instance = new \phpbb\textreparser\plugins\forum_description($this->get('dbal.conn'), 'phpbb_3forums');
 
         $instance->set_name('forum_description');
 
@@ -3655,7 +3706,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextReparser_ForumRulesService()
     {
-        $this->services['text_reparser.forum_rules'] = $instance = new \phpbb\textreparser\plugins\forum_rules($this->get('dbal.conn'), 'phpbb_forums');
+        $this->services['text_reparser.forum_rules'] = $instance = new \phpbb\textreparser\plugins\forum_rules($this->get('dbal.conn'), 'phpbb_3forums');
 
         $instance->set_name('forum_rules');
 
@@ -3669,7 +3720,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextReparser_GroupDescriptionService()
     {
-        $this->services['text_reparser.group_description'] = $instance = new \phpbb\textreparser\plugins\group_description($this->get('dbal.conn'), 'phpbb_groups');
+        $this->services['text_reparser.group_description'] = $instance = new \phpbb\textreparser\plugins\group_description($this->get('dbal.conn'), 'phpbb_3groups');
 
         $instance->set_name('group_description');
 
@@ -3703,7 +3754,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextReparser_PmTextService()
     {
-        $this->services['text_reparser.pm_text'] = $instance = new \phpbb\textreparser\plugins\pm_text($this->get('dbal.conn'), 'phpbb_privmsgs');
+        $this->services['text_reparser.pm_text'] = $instance = new \phpbb\textreparser\plugins\pm_text($this->get('dbal.conn'), 'phpbb_3privmsgs');
 
         $instance->set_name('pm_text');
 
@@ -3731,7 +3782,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextReparser_PollTitleService()
     {
-        $this->services['text_reparser.poll_title'] = $instance = new \phpbb\textreparser\plugins\poll_title($this->get('dbal.conn'), 'phpbb_topics');
+        $this->services['text_reparser.poll_title'] = $instance = new \phpbb\textreparser\plugins\poll_title($this->get('dbal.conn'), 'phpbb_3topics');
 
         $instance->set_name('poll_title');
 
@@ -3745,7 +3796,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextReparser_PostTextService()
     {
-        $this->services['text_reparser.post_text'] = $instance = new \phpbb\textreparser\plugins\post_text($this->get('dbal.conn'), 'phpbb_posts');
+        $this->services['text_reparser.post_text'] = $instance = new \phpbb\textreparser\plugins\post_text($this->get('dbal.conn'), 'phpbb_3posts');
 
         $instance->set_name('post_text');
 
@@ -3759,7 +3810,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getTextReparser_UserSignatureService()
     {
-        $this->services['text_reparser.user_signature'] = $instance = new \phpbb\textreparser\plugins\user_signature($this->get('dbal.conn'), 'phpbb_users');
+        $this->services['text_reparser.user_signature'] = $instance = new \phpbb\textreparser\plugins\user_signature($this->get('dbal.conn'), 'phpbb_3users');
 
         $instance->set_name('user_signature');
 
@@ -3815,7 +3866,7 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
      */
     protected function getUserLoaderService()
     {
-        return $this->services['user_loader'] = new \phpbb\user_loader($this->get('dbal.conn'), './', 'php', 'phpbb_users');
+        return $this->services['user_loader'] = new \phpbb\user_loader($this->get('dbal.conn'), './', 'php', 'phpbb_3users');
     }
 
     /**
@@ -3900,83 +3951,83 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
             'text_formatter.cache.parser.key' => '_text_formatter_parser',
             'text_formatter.cache.renderer.key' => '_text_formatter_renderer',
             'core.template.cache_path' => './cache/production/twig/',
-            'tables.acl_groups' => 'phpbb_acl_groups',
-            'tables.acl_options' => 'phpbb_acl_options',
-            'tables.acl_roles' => 'phpbb_acl_roles',
-            'tables.acl_roles_data' => 'phpbb_acl_roles_data',
-            'tables.acl_users' => 'phpbb_acl_users',
-            'tables.attachments' => 'phpbb_attachments',
-            'tables.auth_provider_oauth_token_storage' => 'phpbb_oauth_tokens',
-            'tables.auth_provider_oauth_states' => 'phpbb_oauth_states',
-            'tables.auth_provider_oauth_account_assoc' => 'phpbb_oauth_accounts',
-            'tables.banlist' => 'phpbb_banlist',
-            'tables.bbcodes' => 'phpbb_bbcodes',
-            'tables.bookmarks' => 'phpbb_bookmarks',
-            'tables.bots' => 'phpbb_bots',
-            'tables.captcha_qa_questions' => 'phpbb_captcha_questions',
-            'tables.captcha_qa_answers' => 'phpbb_captcha_answers',
-            'tables.captcha_qa_confirm' => 'phpbb_qa_confirm',
-            'tables.config' => 'phpbb_config',
-            'tables.config_text' => 'phpbb_config_text',
-            'tables.confirm' => 'phpbb_confirm',
-            'tables.disallow' => 'phpbb_disallow',
-            'tables.drafts' => 'phpbb_drafts',
-            'tables.ext' => 'phpbb_ext',
-            'tables.extensions' => 'phpbb_extensions',
-            'tables.extension_groups' => 'phpbb_extension_groups',
-            'tables.forums' => 'phpbb_forums',
-            'tables.forums_access' => 'phpbb_forums_access',
-            'tables.forums_track' => 'phpbb_forums_track',
-            'tables.forums_watch' => 'phpbb_forums_watch',
-            'tables.groups' => 'phpbb_groups',
-            'tables.icons' => 'phpbb_icons',
-            'tables.lang' => 'phpbb_lang',
-            'tables.log' => 'phpbb_log',
-            'tables.login_attempts' => 'phpbb_login_attempts',
-            'tables.migrations' => 'phpbb_migrations',
-            'tables.moderator_cache' => 'phpbb_moderator_cache',
-            'tables.modules' => 'phpbb_modules',
-            'tables.notification_types' => 'phpbb_notification_types',
-            'tables.notifications' => 'phpbb_notifications',
-            'tables.poll_options' => 'phpbb_poll_options',
-            'tables.poll_votes' => 'phpbb_poll_votes',
-            'tables.posts' => 'phpbb_posts',
-            'tables.privmsgs' => 'phpbb_privmsgs',
-            'tables.privmsgs_folder' => 'phpbb_privmsgs_folder',
-            'tables.privmsgs_rules' => 'phpbb_privmsgs_rules',
-            'tables.privmsgs_to' => 'phpbb_privmsgs_to',
-            'tables.profile_fields' => 'phpbb_profile_fields',
-            'tables.profile_fields_data' => 'phpbb_profile_fields_data',
-            'tables.profile_fields_options_language' => 'phpbb_profile_fields_lang',
-            'tables.profile_fields_language' => 'phpbb_profile_lang',
-            'tables.ranks' => 'phpbb_ranks',
-            'tables.reports' => 'phpbb_reports',
-            'tables.reports_reasons' => 'phpbb_reports_reasons',
-            'tables.search_results' => 'phpbb_search_results',
-            'tables.search_wordlist' => 'phpbb_search_wordlist',
-            'tables.search_wordmatch' => 'phpbb_search_wordmatch',
-            'tables.sessions' => 'phpbb_sessions',
-            'tables.sessions_keys' => 'phpbb_sessions_keys',
-            'tables.sitelist' => 'phpbb_sitelist',
-            'tables.smilies' => 'phpbb_smilies',
-            'tables.sphinx' => 'phpbb_sphinx',
-            'tables.styles' => 'phpbb_styles',
-            'tables.styles_template' => 'phpbb_styles_template',
-            'tables.styles_template_data' => 'phpbb_styles_template_data',
-            'tables.styles_theme' => 'phpbb_styles_theme',
-            'tables.styles_imageset' => 'phpbb_styles_imageset',
-            'tables.styles_imageset_data' => 'phpbb_styles_imageset_data',
-            'tables.teampage' => 'phpbb_teampage',
-            'tables.topics' => 'phpbb_topics',
-            'tables.topics_posted' => 'phpbb_topics_posted',
-            'tables.topics_track' => 'phpbb_topics_track',
-            'tables.topics_watch' => 'phpbb_topics_watch',
-            'tables.user_group' => 'phpbb_user_group',
-            'tables.user_notifications' => 'phpbb_user_notifications',
-            'tables.users' => 'phpbb_users',
-            'tables.warnings' => 'phpbb_warnings',
-            'tables.words' => 'phpbb_words',
-            'tables.zebra' => 'phpbb_zebra',
+            'tables.acl_groups' => 'phpbb_3acl_groups',
+            'tables.acl_options' => 'phpbb_3acl_options',
+            'tables.acl_roles' => 'phpbb_3acl_roles',
+            'tables.acl_roles_data' => 'phpbb_3acl_roles_data',
+            'tables.acl_users' => 'phpbb_3acl_users',
+            'tables.attachments' => 'phpbb_3attachments',
+            'tables.auth_provider_oauth_token_storage' => 'phpbb_3oauth_tokens',
+            'tables.auth_provider_oauth_states' => 'phpbb_3oauth_states',
+            'tables.auth_provider_oauth_account_assoc' => 'phpbb_3oauth_accounts',
+            'tables.banlist' => 'phpbb_3banlist',
+            'tables.bbcodes' => 'phpbb_3bbcodes',
+            'tables.bookmarks' => 'phpbb_3bookmarks',
+            'tables.bots' => 'phpbb_3bots',
+            'tables.captcha_qa_questions' => 'phpbb_3captcha_questions',
+            'tables.captcha_qa_answers' => 'phpbb_3captcha_answers',
+            'tables.captcha_qa_confirm' => 'phpbb_3qa_confirm',
+            'tables.config' => 'phpbb_3config',
+            'tables.config_text' => 'phpbb_3config_text',
+            'tables.confirm' => 'phpbb_3confirm',
+            'tables.disallow' => 'phpbb_3disallow',
+            'tables.drafts' => 'phpbb_3drafts',
+            'tables.ext' => 'phpbb_3ext',
+            'tables.extensions' => 'phpbb_3extensions',
+            'tables.extension_groups' => 'phpbb_3extension_groups',
+            'tables.forums' => 'phpbb_3forums',
+            'tables.forums_access' => 'phpbb_3forums_access',
+            'tables.forums_track' => 'phpbb_3forums_track',
+            'tables.forums_watch' => 'phpbb_3forums_watch',
+            'tables.groups' => 'phpbb_3groups',
+            'tables.icons' => 'phpbb_3icons',
+            'tables.lang' => 'phpbb_3lang',
+            'tables.log' => 'phpbb_3log',
+            'tables.login_attempts' => 'phpbb_3login_attempts',
+            'tables.migrations' => 'phpbb_3migrations',
+            'tables.moderator_cache' => 'phpbb_3moderator_cache',
+            'tables.modules' => 'phpbb_3modules',
+            'tables.notification_types' => 'phpbb_3notification_types',
+            'tables.notifications' => 'phpbb_3notifications',
+            'tables.poll_options' => 'phpbb_3poll_options',
+            'tables.poll_votes' => 'phpbb_3poll_votes',
+            'tables.posts' => 'phpbb_3posts',
+            'tables.privmsgs' => 'phpbb_3privmsgs',
+            'tables.privmsgs_folder' => 'phpbb_3privmsgs_folder',
+            'tables.privmsgs_rules' => 'phpbb_3privmsgs_rules',
+            'tables.privmsgs_to' => 'phpbb_3privmsgs_to',
+            'tables.profile_fields' => 'phpbb_3profile_fields',
+            'tables.profile_fields_data' => 'phpbb_3profile_fields_data',
+            'tables.profile_fields_options_language' => 'phpbb_3profile_fields_lang',
+            'tables.profile_fields_language' => 'phpbb_3profile_lang',
+            'tables.ranks' => 'phpbb_3ranks',
+            'tables.reports' => 'phpbb_3reports',
+            'tables.reports_reasons' => 'phpbb_3reports_reasons',
+            'tables.search_results' => 'phpbb_3search_results',
+            'tables.search_wordlist' => 'phpbb_3search_wordlist',
+            'tables.search_wordmatch' => 'phpbb_3search_wordmatch',
+            'tables.sessions' => 'phpbb_3sessions',
+            'tables.sessions_keys' => 'phpbb_3sessions_keys',
+            'tables.sitelist' => 'phpbb_3sitelist',
+            'tables.smilies' => 'phpbb_3smilies',
+            'tables.sphinx' => 'phpbb_3sphinx',
+            'tables.styles' => 'phpbb_3styles',
+            'tables.styles_template' => 'phpbb_3styles_template',
+            'tables.styles_template_data' => 'phpbb_3styles_template_data',
+            'tables.styles_theme' => 'phpbb_3styles_theme',
+            'tables.styles_imageset' => 'phpbb_3styles_imageset',
+            'tables.styles_imageset_data' => 'phpbb_3styles_imageset_data',
+            'tables.teampage' => 'phpbb_3teampage',
+            'tables.topics' => 'phpbb_3topics',
+            'tables.topics_posted' => 'phpbb_3topics_posted',
+            'tables.topics_track' => 'phpbb_3topics_track',
+            'tables.topics_watch' => 'phpbb_3topics_watch',
+            'tables.user_group' => 'phpbb_3user_group',
+            'tables.user_notifications' => 'phpbb_3user_notifications',
+            'tables.users' => 'phpbb_3users',
+            'tables.warnings' => 'phpbb_3warnings',
+            'tables.words' => 'phpbb_3words',
+            'tables.zebra' => 'phpbb_3zebra',
             'core.disable_super_globals' => true,
             'datetime.class' => '\\phpbb\\datetime',
             'mimetype.guesser.priority.lowest' => -2,
@@ -3991,33 +4042,33 @@ class phpbb_cache_container extends Symfony\Component\DependencyInjection\Contai
                 3 => 'passwords.driver.phpass',
             ),
             'debug.exceptions' => false,
-            'board3.portal.config.table' => 'phpbb_portal_config',
-            'board3.portal.modules.table' => 'phpbb_portal_modules',
+            'board3.portal.config.table' => 'phpbb_3portal_config',
+            'board3.portal.modules.table' => 'phpbb_3portal_modules',
             'core.adm_relative_path' => 'adm/',
-            'core.table_prefix' => 'phpbb_',
+            'core.table_prefix' => 'phpbb_3',
             'cache.driver.class' => 'phpbb\\cache\\driver\\file',
             'dbal.new_link' => false,
         );
     }
 }
 
-class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\template\twig\lexer implements \ProxyManager\Proxy\VirtualProxyInterface
+class phpbbtemplatetwiglexer_000000003d363aeb00000000450efd8f extends \phpbb\template\twig\lexer implements \ProxyManager\Proxy\VirtualProxyInterface
 {
 
     /**
      * @var \Closure|null initializer responsible for generating the wrapped object
      */
-    private $valueHolder5bc6686da5cfe277843224 = null;
+    private $valueHolder5bc7cbfcc32d4610277027 = null;
 
     /**
      * @var \Closure|null initializer responsible for generating the wrapped object
      */
-    private $initializer5bc6686da5d14328727560 = null;
+    private $initializer5bc7cbfcc32e6805312983 = null;
 
     /**
      * @var bool[] map of public properties of the parent class
      */
-    private static $publicProperties5bc6686da5cc4817865950 = array(
+    private static $publicProperties5bc7cbfcc32a8630636773 = array(
         
     );
 
@@ -4026,9 +4077,9 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function set_environment(\Twig_Environment $env)
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, 'set_environment', array('env' => $env), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, 'set_environment', array('env' => $env), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
-        return $this->valueHolder5bc6686da5cfe277843224->set_environment($env);
+        return $this->valueHolder5bc7cbfcc32d4610277027->set_environment($env);
     }
 
     /**
@@ -4036,9 +4087,9 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function tokenize($code, $filename = null)
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, 'tokenize', array('code' => $code, 'filename' => $filename), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, 'tokenize', array('code' => $code, 'filename' => $filename), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
-        return $this->valueHolder5bc6686da5cfe277843224->tokenize($code, $filename);
+        return $this->valueHolder5bc7cbfcc32d4610277027->tokenize($code, $filename);
     }
 
     /**
@@ -4046,9 +4097,9 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function fix_begin_tokens($code, $parent_nodes = array())
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, 'fix_begin_tokens', array('code' => $code, 'parent_nodes' => $parent_nodes), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, 'fix_begin_tokens', array('code' => $code, 'parent_nodes' => $parent_nodes), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
-        return $this->valueHolder5bc6686da5cfe277843224->fix_begin_tokens($code, $parent_nodes);
+        return $this->valueHolder5bc7cbfcc32d4610277027->fix_begin_tokens($code, $parent_nodes);
     }
 
     /**
@@ -4058,7 +4109,7 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function __construct($initializer)
     {
-        $this->initializer5bc6686da5d14328727560 = $initializer;
+        $this->initializer5bc7cbfcc32e6805312983 = $initializer;
     }
 
     /**
@@ -4066,16 +4117,16 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function & __get($name)
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, '__get', array('name' => $name), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, '__get', array('name' => $name), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
-        if (isset(self::$publicProperties5bc6686da5cc4817865950[$name])) {
-            return $this->valueHolder5bc6686da5cfe277843224->$name;
+        if (isset(self::$publicProperties5bc7cbfcc32a8630636773[$name])) {
+            return $this->valueHolder5bc7cbfcc32d4610277027->$name;
         }
 
         $realInstanceReflection = new \ReflectionClass(get_parent_class($this));
 
         if (! $realInstanceReflection->hasProperty($name)) {
-            $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+            $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
 
             $backtrace = debug_backtrace(false);
             trigger_error('Undefined property: ' . get_parent_class($this) . '::$' . $name . ' in ' . $backtrace[0]['file'] . ' on line ' . $backtrace[0]['line'], \E_USER_NOTICE);
@@ -4083,7 +4134,7 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
             return;
         }
 
-        $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+        $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
         $accessor = function & () use ($targetObject, $name) {
             return $targetObject->$name;
         };
@@ -4101,18 +4152,18 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function __set($name, $value)
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, '__set', array('name' => $name, 'value' => $value), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, '__set', array('name' => $name, 'value' => $value), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
         $realInstanceReflection = new \ReflectionClass(get_parent_class($this));
 
         if (! $realInstanceReflection->hasProperty($name)) {
-            $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+            $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
 
             return $targetObject->$name = $value;;
             return;
         }
 
-        $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+        $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
         $accessor = function & () use ($targetObject, $name, $value) {
             return $targetObject->$name = $value;
         };
@@ -4129,18 +4180,18 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function __isset($name)
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, '__isset', array('name' => $name), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, '__isset', array('name' => $name), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
         $realInstanceReflection = new \ReflectionClass(get_parent_class($this));
 
         if (! $realInstanceReflection->hasProperty($name)) {
-            $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+            $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
 
             return isset($targetObject->$name);;
             return;
         }
 
-        $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+        $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
         $accessor = function () use ($targetObject, $name) {
             return isset($targetObject->$name);
         };
@@ -4157,18 +4208,18 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function __unset($name)
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, '__unset', array('name' => $name), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, '__unset', array('name' => $name), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
         $realInstanceReflection = new \ReflectionClass(get_parent_class($this));
 
         if (! $realInstanceReflection->hasProperty($name)) {
-            $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+            $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
 
             unset($targetObject->$name);;
             return;
         }
 
-        $targetObject = $this->valueHolder5bc6686da5cfe277843224;
+        $targetObject = $this->valueHolder5bc7cbfcc32d4610277027;
         $accessor = function () use ($targetObject, $name) {
             unset($targetObject->$name);
         };
@@ -4182,16 +4233,16 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
 
     public function __clone()
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, '__clone', array(), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, '__clone', array(), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
-        $this->valueHolder5bc6686da5cfe277843224 = clone $this->valueHolder5bc6686da5cfe277843224;
+        $this->valueHolder5bc7cbfcc32d4610277027 = clone $this->valueHolder5bc7cbfcc32d4610277027;
     }
 
     public function __sleep()
     {
-        $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, '__sleep', array(), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, '__sleep', array(), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
 
-        return array('valueHolder5bc6686da5cfe277843224');
+        return array('valueHolder5bc7cbfcc32d4610277027');
     }
 
     public function __wakeup()
@@ -4203,7 +4254,7 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function setProxyInitializer(\Closure $initializer = null)
     {
-        $this->initializer5bc6686da5d14328727560 = $initializer;
+        $this->initializer5bc7cbfcc32e6805312983 = $initializer;
     }
 
     /**
@@ -4211,7 +4262,7 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function getProxyInitializer()
     {
-        return $this->initializer5bc6686da5d14328727560;
+        return $this->initializer5bc7cbfcc32e6805312983;
     }
 
     /**
@@ -4219,7 +4270,7 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function initializeProxy()
     {
-        return $this->initializer5bc6686da5d14328727560 && ($this->initializer5bc6686da5d14328727560->__invoke($valueHolder5bc6686da5cfe277843224, $this, 'initializeProxy', array(), $this->initializer5bc6686da5d14328727560) || 1) && $this->valueHolder5bc6686da5cfe277843224 = $valueHolder5bc6686da5cfe277843224;
+        return $this->initializer5bc7cbfcc32e6805312983 && ($this->initializer5bc7cbfcc32e6805312983->__invoke($valueHolder5bc7cbfcc32d4610277027, $this, 'initializeProxy', array(), $this->initializer5bc7cbfcc32e6805312983) || 1) && $this->valueHolder5bc7cbfcc32d4610277027 = $valueHolder5bc7cbfcc32d4610277027;
     }
 
     /**
@@ -4227,7 +4278,7 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function isProxyInitialized()
     {
-        return null !== $this->valueHolder5bc6686da5cfe277843224;
+        return null !== $this->valueHolder5bc7cbfcc32d4610277027;
     }
 
     /**
@@ -4235,7 +4286,7 @@ class phpbbtemplatetwiglexer_00000000331ec7110000000019cb4d00 extends \phpbb\tem
      */
     public function getWrappedValueHolderValue()
     {
-        return $this->valueHolder5bc6686da5cfe277843224;
+        return $this->valueHolder5bc7cbfcc32d4610277027;
     }
 
 
