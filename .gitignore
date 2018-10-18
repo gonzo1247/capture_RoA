@@ -3,3 +3,4 @@ config.php
 .htaccess
 .htpasswd
 cache
+/config.php
