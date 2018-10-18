@@ -1,0 +1,25 @@
+imports:
+    - { resource: tables.yml }
+
+services:
+    paybas.pbwowext.core:
+        class: paybas\pbwowext\core\pbwowstyle
+        arguments:
+            - '@config'
+            - '@cache'
+            - '@dbal.conn'
+            - '@dbal.tools'
+            - '@dispatcher'
+            - '@ext.manager'
+            - '@template'
+            - '@user'
+            - '@path_helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%tables.pbwowext_config%'
+    paybas.pbwowext.stylelistener:
+        class: paybas\pbwowext\event\stylelistener
+        arguments:
+            - '@paybas.pbwowext.core'
+        tags:
+            - { name: event.listener }
