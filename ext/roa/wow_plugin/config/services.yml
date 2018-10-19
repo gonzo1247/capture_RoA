@@ -1,0 +1,12 @@
+services:
+  roa.wow_plugin.controller:
+    class: roa\wow_plugin\controller\Main
+    arguments:
+      - '@config'
+      - '@controller.helper'
+      - '@language'
+      - '@template'
+  roa.wow_plugin.listener:
+    class: roa\wow_plugin\event\MainListener
+    tags:
+      - { name: event.listener }
